@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>氣泡排序法視覺化</title>
+  <style>
+    .array-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .bar {
+      width: 30px;
+      margin: 0 5px;
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      line-height: 30px;
+      font-size: 14px;
+    }
+    .bar.active {
+      background-color: #FF5722;
+    }
+    .description {
+      margin: 20px;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <h1>氣泡排序法視覺化</h1>
+  <div class="description">
+    <h2>氣泡排序法的操作原理</h2>
+    <p>氣泡排序法是一種簡單的排序演算法。它的基本原理是通過多次比較相鄰的元素，將較大的元素逐步「冒泡」到序列的末尾，直到整個序列有序。</p>
+    <h2>操作過程的步驟</h2>
+    <ol>
+      <li>從序列的第一個元素開始，逐一比較相鄰的兩個元素。</li>
+      <li>如果前一個元素比後一個元素大，則交換這兩個元素的位置。</li>
+      <li>完成一次內層迴圈後，最大的元素會移動到序列的末尾。</li>
+      <li>重複上述過程，忽略已排序的部分，直到整個序列有序。</li>
+    </ol>
+    <h2>時間與空間複雜度</h2>
+    <ul>
+      <li>最壞情況：O(n²)</li>
+      <li>平均情況：O(n²)</li>
+      <li>最佳情況：O(n)（當序列已經有序時）</li>
+      <li>空間複雜度：O(1)</li>
+    </ul>
+  </div>
+  <p>輸入一組數字（用逗號分隔），然後按下「排序」按鈕。</p>
+  <input id="arrayInput" type="text" placeholder="例如: 5,3,8,6,2">
+  <button onclick="startSorting()">排序</button>
+  <div class="array-container" id="arrayContainer"></div>
+
+  <script>
+    function createBars(array) {
+      const container = document.getElementById('arrayContainer');
+      container.innerHTML = ''; // 清空容器
+      array.forEach(value => {
+        const bar = document.createElement('div');
+        bar.classList.add('bar');
+        bar.style.height = `${value * 10}px`;
+        bar.textContent = value;
+        container.appendChild(bar);
+      });
+    }
+
+    async function bubbleSort(array) {
+      const bars = document.getElementsByClassName('bar');
+      for (let i = 0; i < array.length - 1; i++) {
+        for (let j = 0; j < array.length - i - 1; j++) {
+          bars[j].classList.add('active');
+          bars[j + 1].classList.add('active');
+          await new Promise(resolve => setTimeout(resolve, 500)); // 等待 500ms
+
+          if (array[j] > array[j + 1]) {
+            // 交換數值
+            const temp = array[j];
+            array[j] = array[j + 1];
+            array[j + 1] = temp;
+
+            // 更新視覺化的高度和文字
+            bars[j].style.height = `${array[j] * 10}px`;
+            bars[j].textContent = array[j];
+            bars[j + 1].style.height = `${array[j + 1] * 10}px`;
+            bars[j + 1].textContent = array[j + 1];
+          }
+
+          bars[j].classList.remove('active');
+          bars[j + 1].classList.remove('active');
+        }
+      }
+    }
+
+    function startSorting() {
+      const input = document.getElementById('arrayInput').value;
+      const array = input.split(',').map(Number);
+      createBars(array);
+      bubbleSort(array);
+    }
+  </script>
+</body>
+</html>
